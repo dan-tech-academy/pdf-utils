@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 
+import '../files.dart';
 import 'stamp_screen.dart';
 
-/// Draw a signature and stamp it onto the PDF.
+/// Draw signatures, keep a library of saved ones, and stamp a chosen
+/// signature onto the PDF.
 class SignScreen extends StatefulWidget {
   const SignScreen({super.key});
 
@@ -17,23 +21,53 @@ class _SignScreenState extends State<SignScreen> {
   final List<List<Offset>> _strokes = [];
   final _boundary = GlobalKey();
   final _stampState = GlobalKey<StampScreenState>();
-  bool _hasPng = false;
+  List<File> _saved = const [];
+  File? _selected;
 
-  Future<void> _rasterize() async {
+  @override
+  void initState() {
+    super.initState();
+    _reloadSaved();
+  }
+
+  Future<void> _reloadSaved() async {
+    final files = await listSignatures();
+    if (mounted) setState(() => _saved = files);
+  }
+
+  void _select(File f) {
+    _stampState.currentState?.setImageBytes(f.readAsBytesSync());
+    setState(() => _selected = f);
+  }
+
+  Future<void> _delete(File f) async {
+    await f.delete();
+    if (_selected == f) setState(() => _selected = null);
+    await _reloadSaved();
+  }
+
+  /// Rasterize the drawn strokes, save as a new signature and select it.
+  Future<void> _saveAndUse() async {
     if (_strokes.isEmpty) return;
     final boundary = _boundary.currentContext?.findRenderObject()
         as RenderRepaintBoundary?;
     if (boundary == null) return;
     final img = await boundary.toImage(pixelRatio: 3);
     final data = await img.toByteData(format: ui.ImageByteFormat.png);
-    if (data != null) {
-      _stampState.currentState?.setImageBytes(data.buffer.asUint8List());
-      setState(() => _hasPng = true);
-    }
+    if (data == null) return;
+    final dir = await signaturesDir();
+    final name =
+        'sig_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.png';
+    final f = File('${dir.path}/$name');
+    await f.writeAsBytes(data.buffer.asUint8List());
+    await _reloadSaved();
+    setState(() => _strokes.clear());
+    _select(f);
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Ký tên')),
       body: Column(
@@ -41,10 +75,65 @@ class _SignScreenState extends State<SignScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (_saved.isNotEmpty) ...[
+                  Text('Chữ ký đã lưu', style: theme.textTheme.titleSmall),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 86,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _saved.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 8),
+                      itemBuilder: (_, i) {
+                        final f = _saved[i];
+                        final selected = f == _selected;
+                        return GestureDetector(
+                          onTap: () => _select(f),
+                          child: Container(
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: selected
+                                    ? theme.colorScheme.primary
+                                    : Colors.grey.shade400,
+                                width: selected ? 2 : 1,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Image.file(f, fit: BoxFit.contain),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: const Icon(Icons.close, size: 18),
+                                    onPressed: () => _delete(f),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 Text(
-                  'Vẽ chữ ký của bạn bên dưới',
-                  style: Theme.of(context).textTheme.titleSmall,
+                  _saved.isEmpty
+                      ? 'Vẽ chữ ký của bạn bên dưới'
+                      : 'Vẽ chữ ký mới',
+                  style: theme.textTheme.titleSmall,
                 ),
                 const SizedBox(height: 8),
                 RepaintBoundary(
@@ -78,17 +167,12 @@ class _SignScreenState extends State<SignScreen> {
                     TextButton.icon(
                       icon: const Icon(Icons.clear),
                       label: const Text('Xóa'),
-                      onPressed: () => setState(() {
-                        _strokes.clear();
-                        _hasPng = false;
-                      }),
+                      onPressed: () => setState(() => _strokes.clear()),
                     ),
                     const Spacer(),
                     FilledButton.tonal(
-                      onPressed: _strokes.isEmpty ? null : _rasterize,
-                      child: Text(
-                        _hasPng ? 'Đã chọn ✓' : 'Dùng chữ ký này',
-                      ),
+                      onPressed: _strokes.isEmpty ? null : _saveAndUse,
+                      child: const Text('Lưu & dùng chữ ký'),
                     ),
                   ],
                 ),

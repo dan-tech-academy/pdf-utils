@@ -15,6 +15,25 @@ Future<Directory> outputsDir() async {
   return dir;
 }
 
+/// Directory holding saved signatures (PNG), created on demand.
+Future<Directory> signaturesDir() async {
+  final base = await getApplicationDocumentsDirectory();
+  final dir = Directory('${base.path}/pdf_utils/signatures');
+  if (!dir.existsSync()) dir.createSync(recursive: true);
+  return dir;
+}
+
+/// Saved signature PNGs, newest first.
+Future<List<File>> listSignatures() async {
+  final dir = await signaturesDir();
+  return dir
+      .listSync()
+      .whereType<File>()
+      .where((f) => f.path.endsWith('.png'))
+      .toList()
+    ..sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+}
+
 /// Files produced by the app, newest first.
 Future<List<File>> listOutputs() async {
   final dir = await outputsDir();

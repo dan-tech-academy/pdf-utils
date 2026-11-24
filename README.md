@@ -30,7 +30,7 @@ PDF Utils là app Flutter cho Android & iOS gom đầy đủ các công cụ PDF
 | **Tách PDF** | Chia theo mỗi N trang / từng trang / giới hạn MB mỗi file |
 | **Sắp xếp trang** | Kéo-thả đổi thứ tự, xoay 90°, xóa trang — có thumbnail preview |
 | **Chèn ảnh** | Đặt ảnh lên trang PDF: chọn trang, góc đặt, kích thước %, độ mờ |
-| **Ký tên** | Vẽ chữ ký trên pad, đặt vào PDF như ảnh chèn |
+| **Ký tên** | Vẽ chữ ký trên pad hoặc chọn từ thư viện chữ ký đã lưu (lưu/xóa nhiều chữ ký), đặt vào PDF như ảnh chèn |
 | **Watermark** | Đóng dấu chữ lên trang: nội dung, cỡ chữ, màu, góc, độ mờ, lớp trên/dưới |
 | **Scan → PDF** | Quét tài liệu bằng camera (ML Kit document scanner), fallback chụp ảnh thường |
 | **Ảnh → PDF** | Tạo PDF từ nhiều ảnh; trang theo ảnh / A4 / Letter, fit contain/cover |
