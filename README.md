@@ -3,11 +3,11 @@
 ![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart)
 ![Platform](https://img.shields.io/badge/Android%20%7C%20iOS-supported-brightgreen)
-![License](https://img.shields.io/badge/Features-100%25%20FREE-orange)
+![License](https://img.shields.io/badge/Features-Freemium%20%2B%20Pro%20%241.99-orange)
 
-**Xử lý mọi vấn đề với file PDF — ngay trên điện thoại, hoàn toàn miễn phí.**
+**Xử lý mọi vấn đề với file PDF — ngay trên điện thoại. 14 công cụ miễn phí + gói Pro $1.99 (mua một lần).**
 
-PDF Utils là app Flutter cho Android & iOS gom **21 công cụ PDF** vào một nơi: nén, ghép, tách, sắp xếp, chèn ảnh, ký tên, watermark, đánh số trang, cắt lề, N-up, điền form, che nội dung, OCR, PDF ↔ Word/Excel/PowerPoint, scan tài liệu, chuyển ảnh ↔ PDF, khóa/mở khóa, trích xuất text và sửa metadata. Mọi xử lý chạy **on-device** bằng engine Rust của [`pdf_manipulator`](https://pub.dev/packages/pdf_manipulator) — không cần server, không tải file lên đâu cả.
+PDF Utils là app Flutter cho Android & iOS gom **21 công cụ PDF** vào một nơi (14 free + 7 Pro): nén, ghép, tách, sắp xếp, chèn ảnh, ký tên, watermark, đánh số trang, cắt lề, N-up, điền form, che nội dung, OCR, PDF ↔ Word/Excel/PowerPoint, scan tài liệu, chuyển ảnh ↔ PDF, khóa/mở khóa, trích xuất text và sửa metadata. Mọi xử lý chạy **on-device** bằng engine Rust của [`pdf_manipulator`](https://pub.dev/packages/pdf_manipulator) — không cần server, không tải file lên đâu cả.
 
 ![Màn hình chính](docs/screenshots/home.png)
 
@@ -36,18 +36,39 @@ PDF Utils là app Flutter cho Android & iOS gom **21 công cụ PDF** vào một
 | **Ảnh → PDF** | Tạo PDF từ nhiều ảnh; trang theo ảnh / A4 / Letter, fit contain/cover |
 | **PDF → Ảnh** | Xuất từng trang ra PNG, chọn DPI 72–300 |
 | **Khóa / Mở khóa** | Đặt mật khẩu (AES) hoặc gỡ mật khẩu PDF |
-| **Cắt lề trang** | Bớt lề trái/phải/trên/dưới (mm) — set CropBox |
-| **Đánh số trang** | Thêm số trang / header-footer dạng `Trang {i} / {n}`, 4 góc, cỡ chữ, lề |
-| **N-up** | Gộp 2/4/6/9 trang lên một tờ A4 ngang (raster) |
-| **Điền form** | Đọc và điền AcroForm: text, checkbox, dropdown, radio |
-| **OCR ảnh → text** | Nhận diện chữ trong ảnh (ML Kit on-device), copy hoặc lưu `.txt` |
-| **PDF ↔ Office** | PDF → Word/Excel/PowerPoint và ngược lại |
-| **Che nội dung** | Redaction thật — kéo vùng trên trang để xóa vĩnh viễn text/ảnh bên dưới |
+| **Cắt lề trang** ⭐ Pro | Bớt lề trái/phải/trên/dưới (mm) — set CropBox |
+| **Đánh số trang** ⭐ Pro | Thêm số trang / header-footer dạng `Trang {i} / {n}`, 4 góc, cỡ chữ, lề |
+| **N-up** ⭐ Pro | Gộp 2/4/6/9 trang lên một tờ A4 ngang (raster) |
+| **Điền form** ⭐ Pro | Đọc và điền AcroForm: text, checkbox, dropdown, radio |
+| **OCR ảnh → text** ⭐ Pro | Nhận diện chữ trong ảnh (ML Kit on-device), copy hoặc lưu `.txt` |
+| **PDF ↔ Office** ⭐ Pro | PDF → Word/Excel/PowerPoint và ngược lại |
+| **Che nội dung** ⭐ Pro | Redaction thật — kéo vùng trên trang để xóa vĩnh viễn text/ảnh bên dưới |
 | **Trích xuất text** | Lấy toàn bộ text ra file `.txt`, copy nhanh |
 | **Metadata** | Sửa tiêu đề, tác giả, chủ đề, từ khóa của PDF |
 | **Xem PDF** | Đọc PDF trong app (flutter_pdfview), đếm trang, chia sẻ |
 
-**100% FREE** — không quảng cáo, không giới hạn, không cần tài khoản, xử lý hoàn toàn trên máy.
+**Freemium** — 14 công cụ miễn phí hoàn toàn; **Pro $1.99 mua một lần** (không subscription) mở khóa 7 công cụ nâng cao. Không quảng cáo, xử lý hoàn toàn trên máy.
+
+## Gói Pro (RevenueCat)
+
+Mua một lần $1.99 mở khóa 7 công cụ ⭐ Pro. Tile Pro hiện icon 🔒 trên home; bấm vào mở paywall **PDF Utils Pro** (icon 👑 trên appbar) — có nút **Khôi phục mua hàng**.
+
+### Setup (developer)
+
+1. Tạo project trên [RevenueCat](https://app.revenuecat.com), thêm app Android + iOS.
+2. Trên Google Play Console / App Store Connect: tạo in-app product **non-consumable** id `pdfutils_pro`, giá **$1.99**.
+3. Trong RevenueCat: thêm product, tạo **Entitlement** `pro`, gắn product vào, tạo **Offering** (đặt `current`) chứa package.
+4. Lấy public SDK key (goog_… / appl_…) và truyền qua dart-define:
+
+   ```bash
+   flutter run --dart-define=RC_ANDROID_KEY=goog_xxx --dart-define=RC_IOS_KEY=appl_xxx
+   ```
+
+   hoặc sửa trực tiếp `kProEntitlement` key mặc định trong `lib/pro.dart`.
+
+Chưa cấu hình key → paywall hiện thông báo thân thiện, các tool Pro vẫn bị khóa (không crash).
+
+
 
 ## Ảnh màn hình thật
 
@@ -110,6 +131,7 @@ Mọi file kết quả nằm ở `<Documents>/pdf_utils/` và xuất hiện tron
 - **[file_picker](https://pub.dev/packages/file_picker)** / **[image_picker](https://pub.dev/packages/image_picker)** — chọn file / ảnh / camera.
 - **[share_plus](https://pub.dev/packages/share_plus)** / **[open_file](https://pub.dev/packages/open_file)** — chia sẻ & mở kết quả.
 - **[permission_handler](https://pub.dev/packages/permission_handler)** — quyền camera.
+- **[purchases_flutter](https://pub.dev/packages/purchases_flutter) 11** — RevenueCat IAP (entitlement `pro`, mua một lần).
 
 Tất cả thư viện đều mã nguồn mở (MIT/BSD) và miễn phí.
 
@@ -143,4 +165,4 @@ App không cần quyền storage đặc biệt — file chọn qua SAF/photo pic
 
 ## Giấy phép
 
-Mọi tính năng miễn phí. Mã nguồn phát hành theo MIT License.
+14 công cụ miễn phí; 7 công cụ nâng cao thuộc gói Pro $1.99 (mua một lần). Mã nguồn phát hành theo MIT License.

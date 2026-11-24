@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'files.dart';
+import 'pro.dart';
 import 'screens/compress_screen.dart';
 import 'screens/crop_screen.dart';
 import 'screens/form_screen.dart';
@@ -16,6 +17,7 @@ import 'screens/ocr_screen.dart';
 import 'screens/office_screen.dart';
 import 'screens/pages_screen.dart';
 import 'screens/pdf_to_images_screen.dart';
+import 'screens/pro_screen.dart';
 import 'screens/protect_screen.dart';
 import 'screens/redact_screen.dart';
 import 'screens/scan_screen.dart';
@@ -27,11 +29,13 @@ import 'screens/watermark_screen.dart';
 import 'viewer_screen.dart';
 
 class _Tool {
-  const _Tool(this.icon, this.title, this.subtitle, this.builder);
+  const _Tool(this.icon, this.title, this.subtitle, this.builder,
+      {this.isPro = false});
   final IconData icon;
   final String title;
   final String subtitle;
   final WidgetBuilder builder;
+  final bool isPro;
 }
 
 final _tools = <_Tool>[
@@ -100,24 +104,28 @@ final _tools = <_Tool>[
     'Cắt lề trang',
     'Bớt lề trái/phải/trên/dưới',
     (_) => const CropScreen(),
+    isPro: true,
   ),
   _Tool(
     Icons.format_list_numbered,
     'Đánh số trang',
     'Thêm số trang / header-footer',
     (_) => const NumberingScreen(),
+    isPro: true,
   ),
   _Tool(
     Icons.grid_view,
     'N-up',
     'Gộp 2/4/6/9 trang lên 1 tờ',
     (_) => const NupScreen(),
+    isPro: true,
   ),
   _Tool(
     Icons.assignment,
     'Điền form',
     'Điền form PDF (AcroForm)',
     (_) => const FormScreen(),
+    isPro: true,
   ),
   _Tool(
     Icons.lock,
@@ -136,18 +144,21 @@ final _tools = <_Tool>[
     'OCR ảnh → text',
     'Nhận diện chữ trong ảnh (ML Kit)',
     (_) => const OcrScreen(),
+    isPro: true,
   ),
   _Tool(
     Icons.transform,
     'PDF ↔ Office',
     'Đổi PDF sang Word/Excel/PPT & ngược lại',
     (_) => const OfficeScreen(),
+    isPro: true,
   ),
   _Tool(
     Icons.hide_source,
     'Che nội dung',
     'Xóa vĩnh viễn vùng nhạy cảm',
     (_) => const RedactScreen(),
+    isPro: true,
   ),
   _Tool(
     Icons.edit_note,
@@ -176,7 +187,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    ProManager.instance.init();
+    ProManager.instance.addListener(_onProChanged);
     _refresh();
+  }
+
+  @override
+  void dispose() {
+    ProManager.instance.removeListener(_onProChanged);
+    super.dispose();
+  }
+
+  void _onProChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _openTool(BuildContext context, _Tool t) {
+    final target = (t.isPro && !ProManager.instance.isPro)
+        ? (_) => const ProScreen()
+        : t.builder;
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: target))
+        .then((_) => _refresh());
   }
 
   Future<void> _refresh() async {
@@ -190,6 +222,18 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('PDF Utils'),
         actions: [
+          IconButton(
+            icon: Icon(
+              Icons.workspace_premium,
+              color: ProManager.instance.isPro
+                  ? Theme.of(context).colorScheme.primary
+                  : null,
+            ),
+            tooltip: 'PDF Utils Pro',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ProScreen()),
+            ),
+          ),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _refresh),
         ],
       ),
@@ -210,20 +254,32 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: _tools.length,
               itemBuilder: (context, i) {
                 final t = _tools[i];
+                final locked = t.isPro && !ProManager.instance.isPro;
                 return Card(
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
-                    onTap: () => Navigator.of(context)
-                        .push(MaterialPageRoute(builder: t.builder))
-                        .then((_) => _refresh()),
+                    onTap: () => _openTool(context, t),
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            t.icon,
-                            color: Theme.of(context).colorScheme.primary,
+                          Row(
+                            children: [
+                              Icon(
+                                t.icon,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const Spacer(),
+                              if (locked)
+                                Icon(
+                                  Icons.lock,
+                                  size: 16,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .outline,
+                                ),
+                            ],
                           ),
                           const Spacer(),
                           Text(
@@ -273,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
               for (final f in _outputs.take(20)) _OutputTile(file: f),
             const SizedBox(height: 32),
             Text(
-              'Tất cả tính năng miễn phí • Xử lý hoàn toàn trên máy',
+              'Xử lý hoàn toàn trên máy • Pro mở khóa công cụ nâng cao',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),
