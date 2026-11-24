@@ -7,7 +7,7 @@
 
 **Xử lý mọi vấn đề với file PDF — ngay trên điện thoại, hoàn toàn miễn phí.**
 
-PDF Utils là app Flutter cho Android & iOS gom đầy đủ các công cụ PDF vào một nơi: nén, ghép, tách, sắp xếp, chèn ảnh, ký tên, watermark, scan tài liệu, chuyển ảnh ↔ PDF, khóa/mở khóa, trích xuất text và sửa metadata. Mọi xử lý chạy **on-device** bằng engine Rust của [`pdf_manipulator`](https://pub.dev/packages/pdf_manipulator) — không cần server, không tải file lên đâu cả.
+PDF Utils là app Flutter cho Android & iOS gom **21 công cụ PDF** vào một nơi: nén, ghép, tách, sắp xếp, chèn ảnh, ký tên, watermark, đánh số trang, cắt lề, N-up, điền form, che nội dung, OCR, PDF ↔ Word/Excel/PowerPoint, scan tài liệu, chuyển ảnh ↔ PDF, khóa/mở khóa, trích xuất text và sửa metadata. Mọi xử lý chạy **on-device** bằng engine Rust của [`pdf_manipulator`](https://pub.dev/packages/pdf_manipulator) — không cần server, không tải file lên đâu cả.
 
 ![Màn hình chính](docs/screenshots/home.png)
 
@@ -36,6 +36,13 @@ PDF Utils là app Flutter cho Android & iOS gom đầy đủ các công cụ PDF
 | **Ảnh → PDF** | Tạo PDF từ nhiều ảnh; trang theo ảnh / A4 / Letter, fit contain/cover |
 | **PDF → Ảnh** | Xuất từng trang ra PNG, chọn DPI 72–300 |
 | **Khóa / Mở khóa** | Đặt mật khẩu (AES) hoặc gỡ mật khẩu PDF |
+| **Cắt lề trang** | Bớt lề trái/phải/trên/dưới (mm) — set CropBox |
+| **Đánh số trang** | Thêm số trang / header-footer dạng `Trang {i} / {n}`, 4 góc, cỡ chữ, lề |
+| **N-up** | Gộp 2/4/6/9 trang lên một tờ A4 ngang (raster) |
+| **Điền form** | Đọc và điền AcroForm: text, checkbox, dropdown, radio |
+| **OCR ảnh → text** | Nhận diện chữ trong ảnh (ML Kit on-device), copy hoặc lưu `.txt` |
+| **PDF ↔ Office** | PDF → Word/Excel/PowerPoint và ngược lại |
+| **Che nội dung** | Redaction thật — kéo vùng trên trang để xóa vĩnh viễn text/ảnh bên dưới |
 | **Trích xuất text** | Lấy toàn bộ text ra file `.txt`, copy nhanh |
 | **Metadata** | Sửa tiêu đề, tác giả, chủ đề, từ khóa của PDF |
 | **Xem PDF** | Đọc PDF trong app (flutter_pdfview), đếm trang, chia sẻ |
@@ -66,7 +73,7 @@ lib/
 ├── engine.dart            # PdfEngine — wrapper mỏng quanh pdf_manipulator (Rust engine)
 ├── files.dart             # outputs dir, file picker, image picker, content:// resolver
 ├── widgets.dart           # PickTile / RunButton / ResultCard / ErrorBanner
-├── home_screen.dart       # Grid 14 công cụ + danh sách "File đã tạo"
+├── home_screen.dart       # Grid 21 công cụ + danh sách "File đã tạo"
 ├── viewer_screen.dart     # Xem PDF trong app
 └── screens/               # Một màn hình cho mỗi công cụ
     ├── compress_screen.dart
@@ -81,16 +88,25 @@ lib/
     ├── pdf_to_images_screen.dart
     ├── protect_screen.dart      # khóa / mở khóa
     ├── text_screen.dart         # trích xuất text
-    └── metadata_screen.dart
+    ├── metadata_screen.dart
+    ├── crop_screen.dart         # cắt lề trang (cropMargins)
+    ├── numbering_screen.dart    # đánh số trang / header-footer
+    ├── nup_screen.dart          # N-up: render trang → lưới → PDF
+    ├── form_screen.dart         # điền AcroForm
+    ├── ocr_screen.dart          # ML Kit text recognition
+    ├── office_screen.dart       # PDF ↔ docx/xlsx/pptx
+    └── redact_screen.dart       # redact vùng kéo trên trang
 ```
 
 Mọi file kết quả nằm ở `<Documents>/pdf_utils/` và xuất hiện trong mục **File đã tạo** trên màn hình chính — Xem / Mở / Chia sẻ trực tiếp.
 
 ## Công nghệ & thư viện
 
-- **[pdf_manipulator](https://pub.dev/packages/pdf_manipulator) 6.0.0** — engine Rust chạy off-main-thread: merge, split, compress, rewrite (xoay/sắp xếp/xóa trang, watermark, image stamp, metadata), mã hóa AES, render bitmap, trích text.
+- **[pdf_manipulator](https://pub.dev/packages/pdf_manipulator) 6.0.0** — engine Rust chạy off-main-thread: merge, split, compress, rewrite (xoay/sắp xếp/xóa trang, watermark, image stamp, crop, redaction, form fill, metadata), mã hóa AES, render bitmap, trích text, chuyển đổi Office.
 - **[flutter_pdfview](https://pub.dev/packages/flutter_pdfview)** — xem PDF trong app.
 - **[doc_scanner_kit](https://pub.dev/packages/doc_scanner_kit)** — quét tài liệu (Google ML Kit); có fallback chụp ảnh.
+- **[google_mlkit_text_recognition](https://pub.dev/packages/google_mlkit_text_recognition)** — OCR on-device (không cần Play services).
+- **[image](https://pub.dev/packages/image)** — ghép lưới trang cho N-up.
 - **[file_picker](https://pub.dev/packages/file_picker)** / **[image_picker](https://pub.dev/packages/image_picker)** — chọn file / ảnh / camera.
 - **[share_plus](https://pub.dev/packages/share_plus)** / **[open_file](https://pub.dev/packages/open_file)** — chia sẻ & mở kết quả.
 - **[permission_handler](https://pub.dev/packages/permission_handler)** — quyền camera.

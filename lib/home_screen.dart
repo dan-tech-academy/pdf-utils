@@ -5,12 +5,19 @@ import 'package:share_plus/share_plus.dart';
 
 import 'files.dart';
 import 'screens/compress_screen.dart';
+import 'screens/crop_screen.dart';
+import 'screens/form_screen.dart';
 import 'screens/images_to_pdf_screen.dart';
 import 'screens/merge_screen.dart';
 import 'screens/metadata_screen.dart';
+import 'screens/numbering_screen.dart';
+import 'screens/nup_screen.dart';
+import 'screens/ocr_screen.dart';
+import 'screens/office_screen.dart';
 import 'screens/pages_screen.dart';
 import 'screens/pdf_to_images_screen.dart';
 import 'screens/protect_screen.dart';
+import 'screens/redact_screen.dart';
 import 'screens/scan_screen.dart';
 import 'screens/sign_screen.dart';
 import 'screens/split_screen.dart';
@@ -89,6 +96,30 @@ final _tools = <_Tool>[
     (_) => const PdfToImagesScreen(),
   ),
   _Tool(
+    Icons.crop,
+    'Cắt lề trang',
+    'Bớt lề trái/phải/trên/dưới',
+    (_) => const CropScreen(),
+  ),
+  _Tool(
+    Icons.format_list_numbered,
+    'Đánh số trang',
+    'Thêm số trang / header-footer',
+    (_) => const NumberingScreen(),
+  ),
+  _Tool(
+    Icons.grid_view,
+    'N-up',
+    'Gộp 2/4/6/9 trang lên 1 tờ',
+    (_) => const NupScreen(),
+  ),
+  _Tool(
+    Icons.assignment,
+    'Điền form',
+    'Điền form PDF (AcroForm)',
+    (_) => const FormScreen(),
+  ),
+  _Tool(
     Icons.lock,
     'Khóa / Mở khóa',
     'Đặt hoặc gỡ mật khẩu PDF',
@@ -99,6 +130,24 @@ final _tools = <_Tool>[
     'Trích xuất text',
     'Lấy text ra file .txt',
     (_) => const TextScreen(),
+  ),
+  _Tool(
+    Icons.document_scanner_outlined,
+    'OCR ảnh → text',
+    'Nhận diện chữ trong ảnh (ML Kit)',
+    (_) => const OcrScreen(),
+  ),
+  _Tool(
+    Icons.transform,
+    'PDF ↔ Office',
+    'Đổi PDF sang Word/Excel/PPT & ngược lại',
+    (_) => const OfficeScreen(),
+  ),
+  _Tool(
+    Icons.hide_source,
+    'Che nội dung',
+    'Xóa vĩnh viễn vùng nhạy cảm',
+    (_) => const RedactScreen(),
   ),
   _Tool(
     Icons.edit_note,

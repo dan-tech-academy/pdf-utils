@@ -218,6 +218,130 @@ class PdfEngine {
     );
   }
 
+  /// Stamps [text] at [position] on every page, one watermark per page —
+  /// used for page numbering and header/footer.
+  Future<void> numberPages(
+    File input,
+    File output, {
+    required String pattern,
+    required PdfWatermarkPosition position,
+    double fontSize = 11,
+    String? password,
+  }) async {
+    final count = (await pageInfo(input, password: password)).length;
+    final sink = await _sink(output);
+    await _pdf.rewrite(
+      await _input(input, password),
+      sink,
+      (e) async {
+        for (var i = 0; i < count; i++) {
+          final text = pattern
+              .replaceAll('{i}', '${i + 1}')
+              .replaceAll('{n}', '$count');
+          await e.addWatermark(
+            text,
+            pages: PdfPages.single(i),
+            position: position,
+            style: PdfWatermarkStyle(
+              fontSize: fontSize,
+              opacity: 1,
+              angleDegrees: 0,
+              color: PdfColor.black,
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  /// Crops every page's margins by the given amounts in points.
+  Future<void> cropMargins(
+    File input,
+    File output, {
+    double left = 0,
+    double right = 0,
+    double top = 0,
+    double bottom = 0,
+    String? password,
+  }) async {
+    final sink = await _sink(output);
+    await _pdf.rewrite(
+      await _input(input, password),
+      sink,
+      (e) => e.cropMargins(left: left, right: right, top: top, bottom: bottom),
+    );
+  }
+
+  /// Reads the AcroForm fields of [file].
+  Future<List<PdfFormField>> formFields(File file, {String? password}) async =>
+      _pdf.read(await _input(file, password), (doc) => doc.formFields());
+
+  /// Sets form field values and writes [output].
+  Future<void> fillForm(
+    File input,
+    File output,
+    Map<String, PdfFormFieldValue> values, {
+    String? password,
+  }) async {
+    final sink = await _sink(output);
+    await _pdf.rewrite(
+      await _input(input, password),
+      sink,
+      (e) async {
+        for (final entry in values.entries) {
+          await e.field(entry.key).setValue(entry.value);
+        }
+      },
+    );
+  }
+
+  /// Permanently removes content under [regions] (points, y-up) on [page]
+  /// and draws a black overlay over each.
+  Future<PdfRedactionReport> redact(
+    File input,
+    File output,
+    int page,
+    List<PdfRect> regions, {
+    String? password,
+  }) async {
+    final sink = await _sink(output);
+    PdfRedactionReport? report;
+    await _pdf.rewrite(
+      await _input(input, password),
+      sink,
+      (e) async => report = await e.redact(page, regions),
+    );
+    return report!;
+  }
+
+  // ── Conversions ──
+
+  /// Converts a PDF to an Office document (docx/xlsx/pptx).
+  Future<void> pdfToOffice(
+    File input,
+    File output,
+    PdfOfficeFormat format, {
+    String? password,
+  }) async {
+    final sink = await _sink(output);
+    await _pdf.convertToOffice(
+      await _input(input, password),
+      sink,
+      format: format,
+    );
+  }
+
+  /// Converts an Office document (docx/xlsx/pptx) to PDF.
+  Future<void> officeToPdf(
+    File input,
+    File output,
+    PdfOfficeFormat format,
+  ) async {
+    final source = await FileSource.open(input);
+    final sink = await _sink(output);
+    await _pdf.convertFromOffice(source, sink, format: format);
+  }
+
   /// Replaces metadata.
   Future<void> setMetadata(
     File input,
