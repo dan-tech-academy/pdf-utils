@@ -54,9 +54,9 @@ Chụp từ Android emulator chạy build debug thật:
 |---|---|---|
 | ![Nén](docs/screenshots/comp_done.png) | ![Tùy chọn chèn](docs/screenshots/stamp_ready.png) | ![Đã chèn](docs/screenshots/stamp_done.png) |
 
-| Xem PDF trong app |
-|---|
-| ![Viewer](docs/screenshots/viewer.png) |
+| Xem PDF trong app | Ảnh → PDF |
+|---|---|
+| ![Viewer](docs/screenshots/viewer.png) | ![Ảnh to PDF](docs/screenshots/i2p_done.png) |
 
 ## Kiến trúc
 
