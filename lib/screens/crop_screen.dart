@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -63,7 +64,7 @@ class _CropScreenState extends State<CropScreen> {
       );
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = '$e');
+      setState(() => _error = friendlyError(e));
     } finally {
       setState(() => _running = false);
     }

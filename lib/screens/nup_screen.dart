@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -115,7 +116,7 @@ class _NupScreenState extends State<NupScreen> {
       }
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = '$e');
+      setState(() => _error = friendlyError(e));
     } finally {
       setState(() => _running = false);
     }
@@ -124,7 +125,7 @@ class _NupScreenState extends State<NupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('N-up (gộp trang)')),
+      appBar: AppBar(title: const Text('Gộp trang lên 1 tờ')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -40,7 +41,7 @@ class _MergeScreenState extends State<MergeScreen> {
       await PdfEngine.instance.merge(_inputs, out);
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = friendlyError(e));
     } finally {
       if (mounted) setState(() => _running = false);
     }

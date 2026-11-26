@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'errors.dart';
 import 'files.dart';
 import 'widgets.dart';
 
@@ -92,7 +93,7 @@ class _ViewerScreenState extends State<ViewerScreen> {
               autoSpacing: true,
               pageFling: true,
               fitPolicy: FitPolicy.BOTH,
-              onError: (e) => setState(() => _error = e.toString()),
+              onError: (e) => setState(() => _error = friendlyError(e)),
               onRender: (pages) => setState(() => _pages = pages ?? 0),
               onPageChanged: (page, total) => setState(() {
                 _page = page ?? 0;

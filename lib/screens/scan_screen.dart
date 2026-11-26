@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -51,7 +52,7 @@ class _ScanScreenState extends State<ScanScreen> {
       await file.copy(out.path);
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = friendlyError(e));
     } finally {
       if (mounted) setState(() => _running = false);
     }
@@ -100,7 +101,7 @@ class _ScanScreenState extends State<ScanScreen> {
       await PdfEngine.instance.imagesToPdf([photo], out);
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = friendlyError(e));
     } finally {
       if (mounted) setState(() => _running = false);
     }

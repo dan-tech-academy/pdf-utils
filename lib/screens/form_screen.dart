@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -50,7 +51,7 @@ class _FormScreenState extends State<FormScreen> {
       }
       setState(() => _fields = fields);
     } catch (e) {
-      setState(() => _error = '$e');
+      setState(() => _error = friendlyError(e));
     }
   }
 
@@ -97,7 +98,7 @@ class _FormScreenState extends State<FormScreen> {
       await PdfEngine.instance.fillForm(input, out, values);
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = '$e');
+      setState(() => _error = friendlyError(e));
     } finally {
       setState(() => _running = false);
     }

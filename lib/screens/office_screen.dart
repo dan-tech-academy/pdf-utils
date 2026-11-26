@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -82,7 +83,7 @@ class _OfficeScreenState extends State<OfficeScreen> {
       }
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = '$e');
+      setState(() => _error = friendlyError(e));
     } finally {
       setState(() => _running = false);
     }
@@ -92,7 +93,7 @@ class _OfficeScreenState extends State<OfficeScreen> {
   Widget build(BuildContext context) {
     final isPdf = _isPdfInput;
     return Scaffold(
-      appBar: AppBar(title: const Text('PDF ↔ Office')),
+      appBar: AppBar(title: const Text('PDF ↔ Word, Excel, PPT')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

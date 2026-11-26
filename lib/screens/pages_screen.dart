@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -70,7 +71,7 @@ class _PagesScreenState extends State<PagesScreen> {
     } catch (e) {
       setState(() {
         _loading = false;
-        _error = e.toString();
+        _error = friendlyError(e);
       });
     }
   }
@@ -108,7 +109,7 @@ class _PagesScreenState extends State<PagesScreen> {
       );
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = friendlyError(e));
     } finally {
       if (mounted) setState(() => _running = false);
     }

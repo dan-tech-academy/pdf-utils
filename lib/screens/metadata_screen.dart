@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -77,7 +78,7 @@ class _MetadataScreenState extends State<MetadataScreen> {
       );
       setState(() => _output = out);
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = friendlyError(e));
     } finally {
       if (mounted) setState(() => _running = false);
     }
@@ -86,7 +87,7 @@ class _MetadataScreenState extends State<MetadataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Metadata')),
+      appBar: AppBar(title: const Text('Thông tin file')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

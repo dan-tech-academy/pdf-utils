@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -48,7 +49,7 @@ class _RedactScreenState extends State<RedactScreen> {
       _pages = await PdfEngine.instance.pageInfo(f);
       await _loadPage(0);
     } catch (e) {
-      setState(() => _error = '$e');
+      setState(() => _error = friendlyError(e));
     }
   }
 
@@ -110,7 +111,7 @@ class _RedactScreenState extends State<RedactScreen> {
         _report = report;
       });
     } catch (e) {
-      setState(() => _error = '$e');
+      setState(() => _error = friendlyError(e));
     } finally {
       setState(() => _running = false);
     }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
 
 import '../engine.dart';
+import '../errors.dart';
 import '../files.dart';
 import '../widgets.dart';
 
@@ -62,7 +63,7 @@ class _SplitScreenState extends State<SplitScreen> {
           await PdfEngine.instance.split(input, dir, base, by: rule);
       setState(() => _outputs = files);
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = friendlyError(e));
     } finally {
       if (mounted) setState(() => _running = false);
     }
