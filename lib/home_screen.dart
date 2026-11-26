@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'files.dart';
-import 'pro.dart';
 import 'screens/compress_screen.dart';
 import 'screens/crop_screen.dart';
 import 'screens/form_screen.dart';
@@ -17,7 +16,6 @@ import 'screens/ocr_screen.dart';
 import 'screens/office_screen.dart';
 import 'screens/pages_screen.dart';
 import 'screens/pdf_to_images_screen.dart';
-import 'screens/pro_screen.dart';
 import 'screens/protect_screen.dart';
 import 'screens/redact_screen.dart';
 import 'screens/scan_screen.dart';
@@ -30,13 +28,11 @@ import 'viewer_screen.dart';
 import 'widgets.dart';
 
 class _Tool {
-  const _Tool(this.icon, this.title, this.subtitle, this.builder,
-      {this.isPro = false});
+  const _Tool(this.icon, this.title, this.subtitle, this.builder);
   final IconData icon;
   final String title;
   final String subtitle;
   final WidgetBuilder builder;
-  final bool isPro;
 }
 
 class _ToolGroup {
@@ -45,7 +41,7 @@ class _ToolGroup {
   final List<_Tool> tools;
 }
 
-/// Home sections, in display order. Within a group, free tools come first.
+/// Home sections, in display order.
 final _groups = <_ToolGroup>[
   _ToolGroup('File & trang', [
     _Tool(
@@ -77,14 +73,12 @@ final _groups = <_ToolGroup>[
       'Cắt lề trang',
       'Bớt lề trái/phải/trên/dưới',
       (_) => const CropScreen(),
-      isPro: true,
     ),
     _Tool(
       Icons.grid_view_outlined,
       'N-up',
       'Gộp 2/4/6/9 trang lên 1 tờ',
       (_) => const NupScreen(),
-      isPro: true,
     ),
   ]),
   _ToolGroup('Chỉnh sửa & ký', [
@@ -111,21 +105,18 @@ final _groups = <_ToolGroup>[
       'Đánh số trang',
       'Thêm số trang / header-footer',
       (_) => const NumberingScreen(),
-      isPro: true,
     ),
     _Tool(
       Icons.assignment_outlined,
       'Điền form',
       'Điền form PDF (AcroForm)',
       (_) => const FormScreen(),
-      isPro: true,
     ),
     _Tool(
       Icons.hide_source_outlined,
       'Che nội dung',
       'Xóa vĩnh viễn vùng nhạy cảm',
       (_) => const RedactScreen(),
-      isPro: true,
     ),
   ]),
   _ToolGroup('Chuyển đổi', [
@@ -158,14 +149,12 @@ final _groups = <_ToolGroup>[
       'OCR ảnh → text',
       'Nhận diện chữ trong ảnh (ML Kit)',
       (_) => const OcrScreen(),
-      isPro: true,
     ),
     _Tool(
       Icons.swap_horiz_rounded,
       'PDF ↔ Office',
       'Đổi PDF sang Word/Excel/PPT & ngược lại',
       (_) => const OfficeScreen(),
-      isPro: true,
     ),
   ]),
   _ToolGroup('Bảo mật & thông tin', [
@@ -203,27 +192,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    ProManager.instance.init();
-    ProManager.instance.addListener(_onProChanged);
     _refresh();
   }
 
-  @override
-  void dispose() {
-    ProManager.instance.removeListener(_onProChanged);
-    super.dispose();
-  }
-
-  void _onProChanged() {
-    if (mounted) setState(() {});
-  }
-
   void _openTool(BuildContext context, _Tool t) {
-    final target = (t.isPro && !ProManager.instance.isPro)
-        ? (_) => const ProScreen()
-        : t.builder;
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: target))
+        .push(MaterialPageRoute(builder: t.builder))
         .then((_) => _refresh());
   }
 
@@ -235,7 +209,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isPro = ProManager.instance.isPro;
     return Scaffold(
       appBar: AppBar(
         title: const Text('PDF Utils'),
@@ -244,17 +217,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         toolbarHeight: 64,
         actions: [
-          IconButton(
-            icon: Icon(
-              isPro
-                  ? Icons.workspace_premium
-                  : Icons.workspace_premium_outlined,
-            ),
-            tooltip: 'PDF Utils Pro',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ProScreen()),
-            ),
-          ),
           IconButton(
             icon: const Icon(Icons.refresh_outlined),
             tooltip: 'Làm mới',
@@ -280,7 +242,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     for (final t in group.tools)
                       _ToolRow(
                         tool: t,
-                        locked: t.isPro && !isPro,
                         onTap: () => _openTool(context, t),
                       ),
                   ],
@@ -300,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               const SizedBox(height: 28),
               Text(
-                'Xử lý hoàn toàn trên máy • Pro mở khóa công cụ nâng cao',
+                'Miễn phí • Xử lý hoàn toàn trên máy',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
@@ -374,14 +335,9 @@ class _GroupCard extends StatelessWidget {
 }
 
 class _ToolRow extends StatelessWidget {
-  const _ToolRow({
-    required this.tool,
-    required this.locked,
-    required this.onTap,
-  });
+  const _ToolRow({required this.tool, required this.onTap});
 
   final _Tool tool;
-  final bool locked;
   final VoidCallback onTap;
 
   @override
@@ -400,21 +356,11 @@ class _ToolRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          tool.title,
-                          style: theme.textTheme.titleMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (locked) ...[
-                        const SizedBox(width: 8),
-                        const _ProTag(),
-                      ],
-                    ],
+                  Text(
+                    tool.title,
+                    style: theme.textTheme.titleMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 1),
                   Text(
@@ -431,33 +377,6 @@ class _ToolRow extends StatelessWidget {
             const SizedBox(width: 8),
             Icon(Icons.chevron_right_rounded, size: 20, color: scheme.outline),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Marks a tool that needs Pro; shown only while Pro is locked.
-class _ProTag extends StatelessWidget {
-  const _ProTag();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: scheme.outline.withValues(alpha: 0.6)),
-      ),
-      child: Text(
-        'PRO',
-        style: theme.textTheme.labelSmall?.copyWith(
-          color: scheme.onSurfaceVariant,
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.1,
         ),
       ),
     );
