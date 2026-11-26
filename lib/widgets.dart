@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -344,6 +345,28 @@ class ResultFilesCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Longest text [copyText] puts on the clipboard: Android refuses data over
+/// about 1 MB passing between apps, and Dart strings are UTF-16.
+const _maxCopyChars = 200000;
+
+/// Copies [text] to the clipboard and confirms it. Text too long for the
+/// clipboard gets a pointer to saving or sharing instead.
+Future<void> copyText(BuildContext context, String text) async {
+  final messenger = ScaffoldMessenger.of(context);
+  if (text.length > _maxCopyChars) {
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Văn bản quá dài để sao chép. Hãy dùng "Lưu .txt" hoặc "Chia sẻ".',
+        ),
+      ),
+    );
+    return;
+  }
+  await Clipboard.setData(ClipboardData(text: text));
+  messenger.showSnackBar(const SnackBar(content: Text('Đã sao chép')));
 }
 
 /// Error banner.
