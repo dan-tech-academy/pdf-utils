@@ -60,7 +60,7 @@ class _PdfToImagesScreenState extends State<PdfToImagesScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.picture_as_pdf,
+            icon: Icons.picture_as_pdf_outlined,
             label: 'Chọn PDF',
             picked: _input?.path.split('/').last,
             onPick: _pick,

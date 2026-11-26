@@ -30,11 +30,14 @@ class _ViewerPickScreenState extends State<ViewerPickScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Xem PDF')),
       body: Center(
-        child: PickTile(
-          icon: Icons.picture_as_pdf,
-          label: 'Chọn file PDF để xem',
-          picked: _file?.path.split('/').last,
-          onPick: _pick,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: PickTile(
+            icon: Icons.picture_as_pdf_outlined,
+            label: 'Chọn file PDF để xem',
+            picked: _file?.path.split('/').last,
+            onPick: _pick,
+          ),
         ),
       ),
     );
@@ -67,7 +70,8 @@ class _ViewerScreenState extends State<ViewerScreen> {
           ),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.share),
+            icon: const Icon(Icons.share_outlined),
+            tooltip: 'Chia sẻ',
             onPressed: () => SharePlus.instance.share(
               ShareParams(files: [XFile(widget.file.path)]),
             ),
@@ -75,7 +79,12 @@ class _ViewerScreenState extends State<ViewerScreen> {
         ],
       ),
       body: _error != null
-          ? Center(child: ErrorBanner(message: _error!))
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: ErrorBanner(message: _error!),
+              ),
+            )
           : PDFView(
               filePath: widget.file.path,
               enableSwipe: true,

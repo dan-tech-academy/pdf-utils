@@ -77,14 +77,14 @@ class _ImagesToPdfScreenState extends State<ImagesToPdfScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.photo_library,
+            icon: Icons.photo_library_outlined,
             label: 'Chọn ảnh từ thư viện',
             picked: _images.isEmpty ? null : '${_images.length} ảnh',
             onPick: _add,
           ),
           const SizedBox(height: 8),
           PickTile(
-            icon: Icons.camera_alt,
+            icon: Icons.camera_alt_outlined,
             label: 'Chụp ảnh mới',
             onPick: _capture,
           ),

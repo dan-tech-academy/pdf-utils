@@ -14,6 +14,19 @@ class _ProScreenState extends State<ProScreen> {
   bool _busy = false;
   String? _result;
 
+  static const _features = [
+    _ProFeature(Icons.crop_outlined, 'Cắt lề trang'),
+    _ProFeature(
+      Icons.format_list_numbered_outlined,
+      'Đánh số trang / header-footer',
+    ),
+    _ProFeature(Icons.grid_view_outlined, 'N-up (gộp trang)'),
+    _ProFeature(Icons.assignment_outlined, 'Điền form PDF'),
+    _ProFeature(Icons.text_fields_outlined, 'OCR ảnh → text'),
+    _ProFeature(Icons.swap_horiz_rounded, 'PDF ↔ Word/Excel/PowerPoint'),
+    _ProFeature(Icons.hide_source_outlined, 'Che nội dung (redact)'),
+  ];
+
   Future<void> _buy() async {
     setState(() {
       _busy = true;
@@ -43,46 +56,43 @@ class _ProScreenState extends State<ProScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
     final pro = ProManager.instance;
     final pkg = pro.offerings?.current?.availablePackages.firstOrNull;
     final price = pkg?.storeProduct.priceString ?? '\$1.99';
     return Scaffold(
       appBar: AppBar(title: const Text('PDF Utils Pro')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
+          const Center(
+            child: IconTile(Icons.workspace_premium_outlined, size: 64),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Mở khóa 7 công cụ nâng cao',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Mua một lần, dùng mãi mãi — $price',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(color: muted),
+          ),
+          const SizedBox(height: 24),
           Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.workspace_premium,
-                    size: 56,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Mở khóa 7 công cụ nâng cao',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Mua một lần, dùng mãi mãi — $price',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+            margin: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0; i < _features.length; i++) ...[
+                  if (i > 0) const Divider(indent: 66),
+                  _features[i],
                 ],
-              ),
+              ],
             ),
           ),
-          const SizedBox(height: 8),
-          const _ProFeature(Icons.crop, 'Cắt lề trang'),
-          const _ProFeature(Icons.format_list_numbered, 'Đánh số trang / header-footer'),
-          const _ProFeature(Icons.grid_view, 'N-up (gộp trang)'),
-          const _ProFeature(Icons.assignment, 'Điền form PDF'),
-          const _ProFeature(Icons.document_scanner_outlined, 'OCR ảnh → text'),
-          const _ProFeature(Icons.transform, 'PDF ↔ Word/Excel/PowerPoint'),
-          const _ProFeature(Icons.hide_source, 'Che nội dung (redact)'),
           const SizedBox(height: 16),
           if (!pro.keysConfigured)
             const ErrorBanner(
@@ -94,12 +104,18 @@ class _ProScreenState extends State<ProScreen> {
             ErrorBanner(message: pro.error!),
           if (_result != null)
             Card(
-              color: Theme.of(context).colorScheme.primaryContainer,
+              color: theme.colorScheme.primaryContainer,
               child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(_result!),
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  _result!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
+                ),
               ),
             ),
+          const SizedBox(height: 8),
           RunButton(
             label: pro.isPro ? 'Bạn đã là Pro' : 'Nâng cấp Pro — $price',
             enabled: !pro.isPro && !_busy,
@@ -117,7 +133,7 @@ class _ProScreenState extends State<ProScreen> {
             'Thanh toán một lần qua Google Play / App Store. '
             'Không quảng cáo, không subscription.',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall,
+            style: theme.textTheme.bodySmall?.copyWith(color: muted),
           ),
         ],
       ),
@@ -132,10 +148,17 @@ class _ProFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
-      title: Text(label),
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: Row(
+        children: [
+          IconTile(icon, size: 36),
+          const SizedBox(width: 14),
+          Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
+          Icon(Icons.check_rounded, size: 20, color: theme.colorScheme.primary),
+        ],
+      ),
     );
   }
 }

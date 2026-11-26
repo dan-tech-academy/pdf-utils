@@ -111,7 +111,7 @@ class _FormScreenState extends State<FormScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.assignment,
+            icon: Icons.assignment_outlined,
             label: 'Chọn PDF có form',
             picked: _input == null ? null : fileBaseName(_input!.path),
             onPick: _pick,
@@ -180,7 +180,6 @@ class _FormScreenState extends State<FormScreen> {
                 field.kind.wire,
                 if (subtitle.isNotEmpty) subtitle,
               ].join(' · '),
-              border: const OutlineInputBorder(),
             ),
           ),
         );

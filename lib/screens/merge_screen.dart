@@ -54,7 +54,7 @@ class _MergeScreenState extends State<MergeScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.library_add,
+            icon: Icons.library_add_outlined,
             label: 'Chọn các PDF (ít nhất 2)',
             picked: _inputs.isEmpty ? null : '${_inputs.length} file',
             onPick: _add,

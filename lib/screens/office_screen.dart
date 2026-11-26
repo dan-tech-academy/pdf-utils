@@ -97,7 +97,7 @@ class _OfficeScreenState extends State<OfficeScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.description,
+            icon: Icons.description_outlined,
             label: 'Chọn PDF hoặc file Office',
             picked: _input == null ? null : fileBaseName(_input!.path),
             onPick: _pick,
@@ -117,17 +117,17 @@ class _OfficeScreenState extends State<OfficeScreen> {
                 ButtonSegment(
                   value: PdfOfficeFormat.docx,
                   label: Text('Word (.docx)'),
-                  icon: Icon(Icons.article),
+                  icon: Icon(Icons.article_outlined),
                 ),
                 ButtonSegment(
                   value: PdfOfficeFormat.xlsx,
                   label: Text('Excel (.xlsx)'),
-                  icon: Icon(Icons.table_chart),
+                  icon: Icon(Icons.table_chart_outlined),
                 ),
                 ButtonSegment(
                   value: PdfOfficeFormat.pptx,
                   label: Text('PowerPoint'),
-                  icon: Icon(Icons.slideshow),
+                  icon: Icon(Icons.slideshow_outlined),
                 ),
               ],
               selected: {_format},

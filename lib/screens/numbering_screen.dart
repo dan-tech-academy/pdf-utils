@@ -90,7 +90,7 @@ class _NumberingScreenState extends State<NumberingScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.picture_as_pdf,
+            icon: Icons.picture_as_pdf_outlined,
             label: 'Chọn PDF',
             picked: _input == null ? null : fileBaseName(_input!.path),
             onPick: _pick,
@@ -105,16 +105,12 @@ class _NumberingScreenState extends State<NumberingScreen> {
               labelText: 'Mẫu chữ',
               hintText: 'Trang {i} / {n}',
               helperText: '{i} = số trang, {n} = tổng số trang',
-              border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<PdfCorner>(
             initialValue: _corner,
-            decoration: const InputDecoration(
-              labelText: 'Vị trí',
-              border: OutlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: 'Vị trí'),
             items: [
               for (final e in _corners.entries)
                 DropdownMenuItem(value: e.key, child: Text(e.value)),

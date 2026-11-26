@@ -81,7 +81,7 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.picture_as_pdf,
+            icon: Icons.picture_as_pdf_outlined,
             label: 'Chọn PDF',
             picked: _input?.path.split('/').last,
             onPick: _pick,
@@ -91,7 +91,6 @@ class _WatermarkScreenState extends State<WatermarkScreen> {
             controller: _text,
             decoration: const InputDecoration(
               labelText: 'Nội dung watermark',
-              border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 12),

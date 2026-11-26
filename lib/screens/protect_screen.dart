@@ -73,7 +73,7 @@ class _ProtectScreenState extends State<ProtectScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.picture_as_pdf,
+            icon: Icons.picture_as_pdf_outlined,
             label: 'Chọn PDF',
             picked: _input?.path.split('/').last,
             onPick: _pick,
@@ -84,12 +84,12 @@ class _ProtectScreenState extends State<ProtectScreen> {
               ButtonSegment(
                 value: true,
                 label: Text('Khóa bằng mật khẩu'),
-                icon: Icon(Icons.lock),
+                icon: Icon(Icons.lock_outline),
               ),
               ButtonSegment(
                 value: false,
                 label: Text('Mở khóa'),
-                icon: Icon(Icons.lock_open),
+                icon: Icon(Icons.lock_open_outlined),
               ),
             ],
             selected: {_lock},
@@ -102,7 +102,6 @@ class _ProtectScreenState extends State<ProtectScreen> {
             decoration: InputDecoration(
               labelText:
                   _lock ? 'Mật khẩu mới' : 'Mật khẩu hiện tại (nếu có)',
-              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 16),

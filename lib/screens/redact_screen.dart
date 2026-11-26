@@ -134,7 +134,7 @@ class _RedactScreenState extends State<RedactScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.picture_as_pdf,
+            icon: Icons.picture_as_pdf_outlined,
             label: 'Chọn PDF',
             picked: _input == null ? null : fileBaseName(_input!.path),
             onPick: _pick,
@@ -147,10 +147,7 @@ class _RedactScreenState extends State<RedactScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: DropdownButtonFormField<int>(
                 initialValue: _page,
-                decoration: const InputDecoration(
-                  labelText: 'Trang cần che',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: const InputDecoration(labelText: 'Trang cần che'),
                 items: [
                   for (var i = 0; i < _pages.length; i++)
                     DropdownMenuItem(

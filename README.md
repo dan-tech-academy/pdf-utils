@@ -51,7 +51,7 @@ PDF Utils là app Flutter cho Android & iOS gom **21 công cụ PDF** vào một
 
 ## Gói Pro (RevenueCat)
 
-Mua một lần $1.99 mở khóa 7 công cụ ⭐ Pro. Tile Pro hiện icon 🔒 trên home; bấm vào mở paywall **PDF Utils Pro** (icon 👑 trên appbar) — có nút **Khôi phục mua hàng**.
+Mua một lần $1.99 mở khóa 7 công cụ ⭐ Pro. Công cụ Pro có nhãn **PRO** trên màn hình chính; bấm vào mở paywall **PDF Utils Pro** (icon 👑 trên appbar) — có nút **Khôi phục mua hàng**.
 
 ### Setup (developer)
 
@@ -72,7 +72,7 @@ Chưa cấu hình key → paywall hiện thông báo thân thiện, các tool Pr
 
 ## Ảnh màn hình thật
 
-Chụp từ Android emulator chạy build debug thật:
+Chụp từ Android emulator chạy build debug thật. Ảnh chụp trước đợt đổi giao diện navy & xám bạc, nên màu sắc và bố cục màn hình chính đã khác:
 
 | Ghép PDF | Kết quả ghép (5 trang, đúng thứ tự) |
 |---|---|
@@ -90,11 +90,12 @@ Chụp từ Android emulator chạy build debug thật:
 
 ```
 lib/
-├── main.dart              # MaterialApp, light/dark theme
+├── main.dart              # MaterialApp, light/dark theo hệ thống
+├── theme.dart             # Giao diện navy & xám bạc, font Be Vietnam Pro
 ├── engine.dart            # PdfEngine — wrapper mỏng quanh pdf_manipulator (Rust engine)
 ├── files.dart             # outputs dir, file picker, image picker, content:// resolver
-├── widgets.dart           # PickTile / RunButton / ResultCard / ErrorBanner
-├── home_screen.dart       # Grid 21 công cụ + danh sách "File đã tạo"
+├── widgets.dart           # IconTile / PickTile / RunButton / ResultCard / ErrorBanner
+├── home_screen.dart       # 21 công cụ chia 4 nhóm + danh sách "File đã tạo"
 ├── viewer_screen.dart     # Xem PDF trong app
 └── screens/               # Một màn hình cho mỗi công cụ
     ├── compress_screen.dart
@@ -132,8 +133,9 @@ Mọi file kết quả nằm ở `<Documents>/pdf_utils/` và xuất hiện tron
 - **[share_plus](https://pub.dev/packages/share_plus)** / **[open_file](https://pub.dev/packages/open_file)** — chia sẻ & mở kết quả.
 - **[permission_handler](https://pub.dev/packages/permission_handler)** — quyền camera.
 - **[purchases_flutter](https://pub.dev/packages/purchases_flutter) 11** — RevenueCat IAP (entitlement `pro`, mua một lần).
+- **[Be Vietnam Pro](https://fonts.google.com/specimen/Be+Vietnam+Pro)** — font giao diện (SIL OFL), đóng gói sẵn trong `assets/fonts/`, không tải qua mạng.
 
-Tất cả thư viện đều mã nguồn mở (MIT/BSD) và miễn phí.
+Tất cả thư viện đều mã nguồn mở (MIT/BSD; font theo SIL OFL) và miễn phí.
 
 ## Cài đặt & chạy
 

@@ -97,7 +97,7 @@ class _OcrScreenState extends State<OcrScreen> {
             children: [
               Expanded(
                 child: PickTile(
-                  icon: Icons.photo_library,
+                  icon: Icons.photo_library_outlined,
                   label: 'Chọn ảnh',
                   picked: _images.isEmpty
                       ? null
@@ -107,7 +107,7 @@ class _OcrScreenState extends State<OcrScreen> {
               ),
               const SizedBox(width: 8),
               IconButton.filledTonal(
-                icon: const Icon(Icons.photo_camera),
+                icon: const Icon(Icons.photo_camera_outlined),
                 tooltip: 'Chụp ảnh',
                 onPressed: _pickCamera,
               ),
@@ -122,7 +122,7 @@ class _OcrScreenState extends State<OcrScreen> {
                 itemCount: _images.length,
                 separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (_, i) => ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   child: Image.file(
                     _images[i],
                     width: 90,

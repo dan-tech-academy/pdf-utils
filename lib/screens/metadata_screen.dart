@@ -91,7 +91,7 @@ class _MetadataScreenState extends State<MetadataScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.picture_as_pdf,
+            icon: Icons.picture_as_pdf_outlined,
             label: 'Chọn PDF',
             picked: _input?.path.split('/').last,
             onPick: _pick,
@@ -111,10 +111,7 @@ class _MetadataScreenState extends State<MetadataScreen> {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: TextField(
                   controller: ctrl,
-                  decoration: InputDecoration(
-                    labelText: label,
-                    border: const OutlineInputBorder(),
-                  ),
+                  decoration: InputDecoration(labelText: label),
                 ),
               ),
           ],

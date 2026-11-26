@@ -184,7 +184,7 @@ class StampScreenState extends State<StampScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           PickTile(
-            icon: Icons.picture_as_pdf,
+            icon: Icons.picture_as_pdf_outlined,
             label: 'Chọn PDF',
             picked: _input?.path.split('/').last,
             onPick: _pickPdf,
@@ -197,9 +197,7 @@ class StampScreenState extends State<StampScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    Icon(Icons.draw,
-                        size: 36,
-                        color: Theme.of(context).colorScheme.primary),
+                    const IconTile(Icons.draw_outlined, size: 48),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
@@ -209,19 +207,25 @@ class StampScreenState extends State<StampScreen> {
                       ),
                     ),
                     if (_imageBytes != null)
-                      const Icon(Icons.check, color: Colors.green),
+                      Icon(
+                        Icons.check_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                   ],
                 ),
               ),
             )
           else
             PickTile(
-              icon: Icons.image,
+              icon: Icons.image_outlined,
               label: 'Chọn ảnh để chèn',
               picked: _image?.path.split('/').last,
               onPick: _pickImage,
               trailing: _imageBytes != null
-                  ? const Icon(Icons.check, color: Colors.green)
+                  ? Icon(
+                      Icons.check_rounded,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
                   : null,
             ),
           const SizedBox(height: 16),

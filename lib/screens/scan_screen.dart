@@ -118,8 +118,8 @@ class _ScanScreenState extends State<ScanScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  const Icon(Icons.document_scanner, size: 48),
-                  const SizedBox(height: 8),
+                  const IconTile(Icons.document_scanner_outlined, size: 56),
+                  const SizedBox(height: 12),
                   const Text(
                     'Quét tài liệu bằng camera: tự nhận mép, cắt gọn, '
                     'làm sạch ảnh và xuất thẳng ra PDF.',
@@ -131,7 +131,6 @@ class _ScanScreenState extends State<ScanScreen> {
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: 'Số trang tối đa',
-                      border: OutlineInputBorder(),
                     ),
                   ),
                 ],

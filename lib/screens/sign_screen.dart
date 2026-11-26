@@ -98,10 +98,10 @@ class _SignScreenState extends State<SignScreen> {
                               border: Border.all(
                                 color: selected
                                     ? theme.colorScheme.primary
-                                    : Colors.grey.shade400,
+                                    : theme.colorScheme.outlineVariant,
                                 width: selected ? 2 : 1,
                               ),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: Stack(
                               children: [
@@ -117,6 +117,7 @@ class _SignScreenState extends State<SignScreen> {
                                   child: IconButton(
                                     visualDensity: VisualDensity.compact,
                                     icon: const Icon(Icons.close, size: 18),
+                                    tooltip: 'Xóa chữ ký',
                                     onPressed: () => _delete(f),
                                   ),
                                 ),
@@ -142,11 +143,13 @@ class _SignScreenState extends State<SignScreen> {
                     height: 150,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: theme.colorScheme.outlineVariant,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                       child: GestureDetector(
                         onPanStart: (d) => setState(() {
                           _strokes.add([d.localPosition]);
@@ -169,10 +172,20 @@ class _SignScreenState extends State<SignScreen> {
                       label: const Text('Xóa'),
                       onPressed: () => setState(() => _strokes.clear()),
                     ),
-                    const Spacer(),
-                    FilledButton.tonal(
-                      onPressed: _strokes.isEmpty ? null : _saveAndUse,
-                      child: const Text('Lưu & dùng chữ ký'),
+                    const SizedBox(width: 8),
+                    // Lets the label wrap instead of overflowing at large
+                    // text sizes on narrow phones.
+                    Expanded(
+                      child: Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: FilledButton.tonal(
+                          onPressed: _strokes.isEmpty ? null : _saveAndUse,
+                          child: const Text(
+                            'Lưu & dùng chữ ký',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
